@@ -1,8 +1,8 @@
 ---
-caip: X
+caip: 341
 title: Extension ID Target Type Specification
-author: [Joao Tavares] (@ffmcgee725)
-discussions-to: https://github.com/ChainAgnostic/CAIPs/issues/X
+author: Joao Tavares (@ffmcgee725)
+discussions-to: https://github.com/ChainAgnostic/CAIPs/issues/341
 status: Draft
 type: Standard
 created: 2024-12-12
@@ -11,7 +11,7 @@ requires: 294
 
 ## Simple Summary
 
-CAIP-X defines the `extensionId` type as a valid target type for establishing connections with browser extension wallets.
+CAIP-341 defines the `extensionId` type as a valid target type for establishing connections with browser extension wallets.
 
 ## Abstract
 
@@ -37,7 +37,7 @@ Blockchain Library: A library or piece of software that assists a dapp to intera
 
 The `target` field in the `walletData` interface is used to specify the connection method for the wallet. This CAIP introduces the `extensionId` type as a valid target type.
 
-This field MAY be included in the `walletData`, and if included, SHOULD be an object containing `extensionId` type used to connect to wallets using `externally_connectable`.
+This field MAY be included in the `walletData`, and if included, SHOULD be an array with an object containing `extensionId` type used to connect to wallets using `externally_connectable`.
 
 ```typescript
 interface WalletData {
@@ -47,10 +47,12 @@ interface WalletData {
   icon: string;
   rdns: string;
   // Optional properties
-  target?: {
-    type: <caip-id-for-extension-id>,
-    value: <extension_id>
-  }
+  target?: [
+    {
+      type: "caip341",
+      value: <extension_id>
+    }
+  ]
   scopes?: Caip217AuthorizationScopes;
 }
 ```
@@ -65,17 +67,19 @@ const walletData = {
   name: "Example Wallet",
   icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
   rdns: "com.example.wallet",
-  target: {
-    type: "caip-x",
-    value: "abcdefghijklmnopqrstuvwxyz"
-  },
+  target: [
+    {
+      type: "caip341",
+      value: "abcdefghijklmnopqrstuvwxyz",
+    },
+  ],
   scopes: {
     "eip155:1": {
       methods: ["eth_signTransaction", "eth_sendTransaction"],
-      notifications: ["accountsChanged", "chainChanged"]
-    }
-  }
-}
+      notifications: ["accountsChanged", "chainChanged"],
+    },
+  },
+};
 ```
 
 ### Establishing Connection
@@ -97,7 +101,7 @@ port.postMessage({
   method: "wallet_createSession",
   params: {
     // ... session parameters ...
-  }
+  },
 });
 ```
 
@@ -116,4 +120,5 @@ This CAIP is fully compatible with existing standards and does not introduce any
 - [externally_connectable API documentation](https://developer.chrome.com/docs/extensions/reference/manifest/externally-connectable)
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](../LICENSE).
